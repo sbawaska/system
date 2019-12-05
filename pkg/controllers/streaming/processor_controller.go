@@ -541,8 +541,6 @@ func (r *ProcessorReconciler) constructDeploymentForProcessor(processor *streami
 					},
 				},
 			},
-			InitialDelaySeconds: 2,
-			PeriodSeconds:       1,
 		},
 	})
 	podSpec.Volumes = append(podSpec.Volumes, volumes...)
