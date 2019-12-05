@@ -33,6 +33,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -532,6 +533,18 @@ func (r *ProcessorReconciler) constructDeploymentForProcessor(processor *streami
 		ImagePullPolicy: v1.PullIfNotPresent,
 		Env:             environmentVariables,
 		VolumeMounts:    volumeMounts,
+		ReadinessProbe: &v1.Probe{
+			Handler: v1.Handler{
+				TCPSocket: &v1.TCPSocketAction{
+					Port: intstr.IntOrString{
+						IntVal: 8081,
+					},
+				},
+			},
+			InitialDelaySeconds: 2,
+			TimeoutSeconds:      300,
+			PeriodSeconds:       1,
+		},
 	})
 	podSpec.Volumes = append(podSpec.Volumes, volumes...)
 
