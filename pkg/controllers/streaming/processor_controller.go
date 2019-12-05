@@ -542,7 +542,6 @@ func (r *ProcessorReconciler) constructDeploymentForProcessor(processor *streami
 				},
 			},
 			InitialDelaySeconds: 2,
-			TimeoutSeconds:      300,
 			PeriodSeconds:       1,
 		},
 	})
