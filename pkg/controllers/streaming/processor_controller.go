@@ -527,21 +527,22 @@ func (r *ProcessorReconciler) constructDeploymentForProcessor(processor *streami
 			ContainerPort: 8081,
 		},
 	}
+	tcpProbe := v1.Probe{
+		Handler: v1.Handler{
+			TCPSocket: &v1.TCPSocketAction{
+				Port: intstr.FromInt(8081),
+			},
+		},
+	}
+	podSpec.Containers[0].ReadinessProbe = &tcpProbe
+	podSpec.Containers[0].LivenessProbe = &tcpProbe
+
 	podSpec.Containers = append(podSpec.Containers, v1.Container{
 		Name:            "processor",
 		Image:           processorImg,
 		ImagePullPolicy: v1.PullIfNotPresent,
 		Env:             environmentVariables,
 		VolumeMounts:    volumeMounts,
-		ReadinessProbe: &v1.Probe{
-			Handler: v1.Handler{
-				TCPSocket: &v1.TCPSocketAction{
-					Port: intstr.IntOrString{
-						IntVal: 8081,
-					},
-				},
-			},
-		},
 	})
 	podSpec.Volumes = append(podSpec.Volumes, volumes...)
 
